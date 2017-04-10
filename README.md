@@ -4,7 +4,12 @@ Delaney Lothian (1441546), Chris Dodic (1515299)
 Currently application will open map in a new window. Once clicking two places,
 All taxis in taxi directory will pop up. The closest taxi will be called to the pickup
 and will be drawn out following a path until pickup. Once reached pickup, path will be drawn
-from pickup to drop off until "customer" is drop off. If a request is made, path can be driverted.
+from pickup to drop off until "customer" is drop off. If a request is made, path can be diverted.
+
+Instructions:
+
+To use the program, the the file "UberInterface.py" from the command line.
+
 
 April 9th - Files changed:
 		UberInterface.py
