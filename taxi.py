@@ -187,14 +187,21 @@ The UberTaxi class that defines the subclasses for both taxis and customers (pas
 		tx_id = taxi_to_use[0]
 		
 		# add customer to list
+		
+		# checks to see if the request has the "drop first" clause
 		if taxi_to_use[1] == "":
 			taxi_directory[tx_id].plist.append(customer_id)
 			taxi_directory[tx_id].path=taxi_to_use[2]
+			taxi_directory[tx_id].num_pas+=cust_directory[customer_id].num_riders
 			if taxi_to_use[2]:
 				taxi_directory[tx_id].edge_distance_left=int(cost_distance(taxi_directory[tx_id].path[0],taxi_directory[tx_id].path[1]))
+		# customer should be dropped off first before picking up the customer
 		else:
-			taxi_directory[tx_id]
-		# customer_id+=1
+			taxi_directory[tx_id].plist=[customer_id]+taxi_directory[tx_id].plist
+			taxi_directory[tx_id].path=taxi_to_use[2]
+			taxi_directory[tx_id].num_pas+=cust_directory[customer_id].num_riders
+			if taxi_to_use[2]:
+				taxi_directory[tx_id].edge_distance_left=int(cost_distance(taxi_directory[tx_id].path[0],taxi_directory[tx_id].path[1]))
 
 	def advance_taxi(taxi_directory,cust_directory,g):
 		"""
@@ -205,7 +212,9 @@ The UberTaxi class that defines the subclasses for both taxis and customers (pas
 		Output: none ==> updates location of all taxi's
 		"""
 		for taxi in taxi_directory.values():
-			if taxi.path: #taxi is enroute somewhere
+			#taxi is enroute somewhere
+			if taxi.path:
+				# decrement path time counter
 				taxi.edge_distance_left-=1
 				# if a vertex is reached
 				if taxi.edge_distance_left == 0:
@@ -213,29 +222,40 @@ The UberTaxi class that defines the subclasses for both taxis and customers (pas
 					vertex_reached=taxi.path.pop(0)
 					# if there is still a path to follow
 					# 	set new destination and weight to that location
-					if len(taxi.path) > 1:
+					if len(taxi.path):
+						# updates taxi location
 						taxi.loc=vertex_reached
-						taxi.edge_distance_left=int(edge_weights[(taxi.path[0],taxi.path[1])]) # sets new path 'time'
-
-
+						# sets new path 'time'
+						taxi.edge_distance_left=int(edge_weights[(taxi.loc,taxi.path[0])])
+					# Destination reached
 					else:
-						# taxi has dropped off a passenger, what do now?
-						taxi.loc=taxi.path.pop()
+						taxi.loc=vertex_reached
 						#remove customer from the list if this is their destination
 						for psngr in taxi.plist:
-							if cust_directory[psngr].dest == taxi.loc:
-								taxi.plist.remove(psngr) #remove customer from the list
-						#if there are still customers in the taxi, set up next path
+							if cust_directory[psngr].dest==taxi.loc:
+								taxi.num_pas-=cust_directory[psngr].num_riders
+								taxi.plist.remove(psngr)
+						# if there are are still customers in the taxi, set up the next path
 						if taxi.plist:
+							# sets new pathway
 							taxi.path=least_cost_path(g, taxi.loc, cust_directory[taxi.plist[0]].dest,cost_distance)
-							taxi.edge_distance_left=int(edge_weights[(taxi.path[0],taxi.path[1])]) # sets new path 'time'
+							# sets new path 'time'
+							if taxi.path:
+								taxi.edge_distance_left=int(edge_weights[(taxi.loc,taxi.path[1])])
+							# cautionary condtion that removes a passenger if there is no path to their destination
+							else:
+								pas_to_remove=taxi.plist.pop(0)
+								taxi.num_pas-=cust_directory[pas_to_remove].num_riders
+
+						# otherwise just wait
 						else:
 							pass
+
+			# if taxi does not have a path currently
 			else:
+				# if there are still customers in the taxi
 				if taxi.plist:
-					print(cust_directory[taxi.plist[0]].start_loc)
-					print((cust_directory[taxi.plist[0]].dest))
-					print(least_cost_path(g,cust_directory[taxi.plist[0]].start_loc, cust_directory[taxi.plist[0]].dest,cost_distance))
+					# sets new taxi path based on current customer
 					taxi.path=least_cost_path(g,cust_directory[taxi.plist[0]].start_loc, cust_directory[taxi.plist[0]].dest,cost_distance)
-					print(taxi.path)
+					# sets new path time
 					taxi.edge_distance_left=int(edge_weights[(taxi.path[0],taxi.path[1])])
