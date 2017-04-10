@@ -4,8 +4,7 @@ from adjacencygraph import AdjacencyGraph
 '''
 
     This program provides communication support between server and client, handling requests
-    for paths of an AdjacencyGraph by determining the best routes.  As well as
-    ensuring that the client acknowledges each waypoint of the determined route.
+    for paths of an AdjacencyGraph by determining the best routes. 
 
     The file 'server.py' is to be used in conjunction with the adjacencygraph class
     developed in class, and may be executed on its own for testing purposes.
@@ -23,7 +22,7 @@ from adjacencygraph import AdjacencyGraph
     In this case, the search performs acceptably fast. However, if the graph being
     searched was much larger, a more targeted approach should be utilized.
 
-    Updated: March 1, 2017
+    Updated: April 10, 2017
     Chris Dodic (1515299) and Delaney Lothian (1441546)
 
 '''
