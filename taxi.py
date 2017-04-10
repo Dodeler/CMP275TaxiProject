@@ -8,8 +8,25 @@ from operator import itemgetter
 
 
 class UberTaxi:
+"""
+
+The UberTaxi class that defines the subclasses for both taxis and customers (passengers).
+	
+"""
 	# defines a taxi object
 	class Taxi:
+	"""
+	
+	The Taxi class is used to represent taxis on the map, and specifies a taxi's:
+	-location
+	-current number of passengers
+	-destination
+	-list of passengers
+	-maximum number of passengers
+	-pathway to current destination
+	-edge distance left (used to simulate motion along the path)
+	
+	"""
 		def __init__(self, init_vertex, max_num_passengers):
 			self.loc = init_vertex
 			self.num_pas = 0
@@ -26,6 +43,13 @@ class UberTaxi:
 
 	# defines a passenger (could be multiple people: signfies number of riders and start/end points)
 	class Passenger:
+	"""
+	The Passenger class is used to represent customers who make valid requests to
+	the taxi service. They are specified by their:
+	-start location
+	-number of riders
+	-destination
+	"""
 		def __init__(self, initial_loc, num_riders, dest):
 
 			self.start_loc = initial_loc #closest_vertex(initial_loc[0],initial_loc[1])
@@ -33,12 +57,32 @@ class UberTaxi:
 			self.dest = dest #closest_vertex(dest_lat_lon[0],dest_lat_lon[1])
 
 	def taxi_time(path):
+	"""
+	Taxi time determines the 'time' it takes to get to a location based on the given path.
+	
+	Input:  A path (list)
+	
+	Output: Total edge weight sum of the edges in the path.
+	"""
 		cost = 0
 		for v_index in range(len(path)-2):
 			cost+=edge_weights[(path[v_index],path[v_index+1])]
 		return cost
 	# determines which taxi to assign to the pickup
 	def which_taxi(num_passengers, cust_loc, cust_dest, taxi_directory,cust_directory,g,taxi_time):
+	"""
+	Determines which taxi should handle a customer request
+	Inputs:		-number of passengers of request
+			-customer location
+			-taxi dictionary
+			-customer dictionary
+			-the map's graph
+			-the function taxi time
+			
+	Output: (Fastest taxi, 
+		 string stating whether to drop current customer first or blank indicating adding to the list,
+		 the path to the customer)
+	"""
 		# dictionary that keeps track of the time associated with each taxi
 		# 	to pick up a given customer following a request
 		time_dict=defaultdict(list)
@@ -117,15 +161,32 @@ class UberTaxi:
 
 
 	def handle_request(request,taxi_directory,cust_directory,customer_id,g):
-		#Don't think adding float*1000 is necessary
+	"""
+	Takes a customer's request and uses the which_taxi function to determine which taxi to be assigned
+	and updates the taxi's information.
+	
+	Input:  -customer request
+		-taxi dictionary
+		-customer dictionary
+		-customer id number (order number)
+		-the map's graph
+	
+	Output: none ==> updates a taxi following a request.
+	"""
+		# customer's initial location
 		start_loc = closest_vertex(request[0],request[1])
+		# number of passengers for the request
 		num_passengers = int(request[2])
+		# customer's destination
 		dest_loc = closest_vertex(request[3],request[4])
+		# creates an instance of the Passenger class for the customer based on the order number
 		cust_directory[customer_id]=UberTaxi.Passenger(start_loc,num_passengers,dest_loc)
 
-
+		#determines the taxi to use
 		taxi_to_use = UberTaxi.which_taxi(num_passengers,start_loc,dest_loc,taxi_directory,cust_directory,g,UberTaxi.taxi_time)
 		tx_id = taxi_to_use[0]
+		
+		# add customer to list
 		if taxi_to_use[1] == "":
 			taxi_directory[tx_id].plist.append(customer_id)
 			taxi_directory[tx_id].path=taxi_to_use[2]
@@ -138,6 +199,10 @@ class UberTaxi:
 	def advance_taxi(taxi_directory,cust_directory,g):
 		"""
 		moves the location of the taxi up by 1 on its edge weight analysis
+		Input:  -taxi dictionary
+			-customer dictionary
+			-the map's graph
+		Output: none ==> updates location of all taxi's
 		"""
 		for taxi in taxi_directory.values():
 			if taxi.path: #taxi is enroute somewhere
