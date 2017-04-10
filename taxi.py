@@ -3,10 +3,6 @@ from collections import defaultdict
 from operator import itemgetter
 
 
-
-# initialize the map
-
-
 class UberTaxi:
 """
 
@@ -99,8 +95,12 @@ The UberTaxi class that defines the subclasses for both taxis and customers (pas
 				if taxi not in time_dict:
 					time_dict[taxi]=[0,"",[]]
 				path = least_cost_path(g, taxi_directory[taxi].loc, cust_loc,cost_distance)
-				for v_index in range(len(path)-2):
-					time_dict[taxi][0]+=edge_weights[(path[v_index],path[v_index+1])] #NOTE: edge_weights is a dictionary that was added to the server.py file
+				
+				#REMOVE THIS
+# 				for v_index in range(len(path)-2):
+# 					time_dict[taxi][0]+=edge_weights[(path[v_index],path[v_index+1])] #NOTE: edge_weights is a dictionary that was added to the server.py file
+				
+				time_dict[taxi][0]=taxi_time(path)
 				time_dict[taxi][2]=path
 				if not path:
 					time_dict[taxi][0]=float('inf')
@@ -119,7 +119,6 @@ The UberTaxi class that defines the subclasses for both taxis and customers (pas
 					time_to_cust=float('inf')
 				else:
 					time_to_cust = taxi_time(path_to_cust)
-				print("TIME TO CUST: ",time_to_cust)
 
 				# time to customer from current customers drop off point (only accounts for 1 passenger at the moment)
 				current_cust_loc_dest = (cust_directory[taxi_directory[taxi].plist[0]].start_loc,cust_directory[taxi_directory[taxi].plist[0]].dest)
@@ -128,13 +127,7 @@ The UberTaxi class that defines the subclasses for both taxis and customers (pas
 					time_to_cust_from_current_cust=float('inf')
 				else:
 					time_to_cust_from_current_cust = taxi_time(path_to_cust_from_current_cust)
-				print("PATH to cust from cur cust: ",path_to_cust_from_current_cust)
-
-				print("TIME TO CUST FROM CUR CUST: ",time_to_cust_from_current_cust)
-				# time_dict[taxi][3]=path_to_cust_from_current_cust
-				# for v_index in range(len(path)-2):
-				# 	time_to_cust_from_current_cust+=edge_weight[(path_to_cust_from_current_cust[v_index],path_to_cust_from_current_cust[v_index+1])]
-
+				
 				#go pickup first
 				if time_to_cust < time_to_cust_from_current_cust:
 					time_dict[taxi][0]=time_to_cust
