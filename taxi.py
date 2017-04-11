@@ -32,11 +32,6 @@ class UberTaxi:
 			self.path = []
 			self.edge_distance_left=0
 
-		def add_passenger(self, pasngr):
-			self.plist.append(passenger_id)
-
-		# def set_route(self, )
-
 	# defines a passenger (could be multiple people: signfies number of riders and start/end points)
 	class Passenger:
 		"""
@@ -75,7 +70,7 @@ class UberTaxi:
 				-the map's graph
 				-the function taxi time
 
-		Output: (Fastest taxi, 
+		Output: (Fastest taxi,
 			 string stating whether to drop current customer first or blank indicating adding to the list,
 			 the path to the customer)
 		"""
@@ -95,11 +90,11 @@ class UberTaxi:
 				if taxi not in time_dict:
 					time_dict[taxi]=[0,"",[]]
 				path = least_cost_path(g, taxi_directory[taxi].loc, cust_loc,cost_distance)
-				
+
 				#REMOVE THIS
 # 				for v_index in range(len(path)-2):
 # 					time_dict[taxi][0]+=edge_weights[(path[v_index],path[v_index+1])] #NOTE: edge_weights is a dictionary that was added to the server.py file
-				
+
 				time_dict[taxi][0]=taxi_time(path)
 				time_dict[taxi][2]=path
 				if not path:
@@ -109,7 +104,6 @@ class UberTaxi:
 			# minimally optimal time cost for taxis that already have passengers
 			else:
 
-				print("taxi id: ",taxi)
 				if taxi not in time_dict:
 					time_dict[taxi]=[0,"",[]]
 				path_to_cust = least_cost_path(g, taxi_directory[taxi].loc, cust_loc,cost_distance)
@@ -127,7 +121,7 @@ class UberTaxi:
 					time_to_cust_from_current_cust=float('inf')
 				else:
 					time_to_cust_from_current_cust = taxi_time(path_to_cust_from_current_cust)
-				
+
 				#go pickup first
 				if time_to_cust < time_to_cust_from_current_cust:
 					time_dict[taxi][0]=time_to_cust
@@ -136,18 +130,11 @@ class UberTaxi:
 				else:
 					time_dict[taxi][0]=time_to_cust_from_current_cust
 					time_dict[taxi][1]="drop first"
-					# time_dict[taxi][2]=path_to_cust_from_current_cust
-
-
 
 		# returns the id of the "quickest taxi"
 		time_list_sorted = sorted(time_dict.items(), key=itemgetter(1))
 		quickest_taxi=time_list_sorted[0][0]
-		print("FASTEST TAXI! ",quickest_taxi)
-		print("Time dict")
-		for key in time_dict:
-			print(key," ",time_dict[key][0])
-		# print(time_dict.values()[0])
+
 		return(quickest_taxi,time_dict[quickest_taxi][1],time_dict[quickest_taxi][2])
 
 
@@ -178,9 +165,9 @@ class UberTaxi:
 		#determines the taxi to use
 		taxi_to_use = UberTaxi.which_taxi(num_passengers,start_loc,dest_loc,taxi_directory,cust_directory,g,UberTaxi.taxi_time)
 		tx_id = taxi_to_use[0]
-		
+
 		# add customer to list
-		
+
 		# checks to see if the request has the "drop first" clause
 		if taxi_to_use[1] == "":
 			taxi_directory[tx_id].plist.append(customer_id)
@@ -191,7 +178,7 @@ class UberTaxi:
 		# customer should be dropped off first before picking up the customer
 		else:
 			taxi_directory[tx_id].plist=[customer_id]+taxi_directory[tx_id].plist
-			taxi_directory[tx_id].path=taxi_to_use[2]
+			# taxi_directory[tx_id].path=taxi_to_use[2]
 			taxi_directory[tx_id].num_pas+=cust_directory[customer_id].num_riders
 			if taxi_to_use[2]:
 				taxi_directory[tx_id].edge_distance_left=int(cost_distance(taxi_directory[tx_id].path[0],taxi_directory[tx_id].path[1]))
@@ -234,7 +221,7 @@ class UberTaxi:
 							taxi.path=least_cost_path(g, taxi.loc, cust_directory[taxi.plist[0]].dest,cost_distance)
 							# sets new path 'time'
 							if taxi.path:
-								taxi.edge_distance_left=int(edge_weights[(taxi.loc,taxi.path[1])])
+								taxi.edge_distance_left=int(edge_weights[(taxi.path[0],taxi.path[1])])
 							# cautionary condtion that removes a passenger if there is no path to their destination
 							else:
 								pas_to_remove=taxi.plist.pop(0)
@@ -249,7 +236,7 @@ class UberTaxi:
 				# if there are still customers in the taxi
 				if taxi.plist:
 					# sets new taxi path based on current customer
-					taxi.path=least_cost_path(g,cust_directory[taxi.loc, cust_directory[taxi.plist[0]].dest,cost_distance)
+					taxi.path=least_cost_path(g,cust_directory[taxi.plist[0]].start_loc, cust_directory[taxi.plist[0]].dest,cost_distance)
 					# sets new path time
 					if taxi.path:
 						taxi.edge_distance_left=int(edge_weights[(taxi.path[0],taxi.path[1])])

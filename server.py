@@ -1,10 +1,10 @@
 import sys
 from adjacencygraph import AdjacencyGraph
-
+import os
 '''
 
     This program provides communication support between server and client, handling requests
-    for paths of an AdjacencyGraph by determining the best routes. 
+    for paths of an AdjacencyGraph by determining the best routes.
 
     The file 'server.py' is to be used in conjunction with the adjacencygraph class
     developed in class, and may be executed on its own for testing purposes.
@@ -109,7 +109,9 @@ def read_city_graph(filename):
         AdjacencyGraph: Graph representing the city of Edmonton Roads
     """
     g = AdjacencyGraph()
-    with open(filename) as f:
+    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+    with open(os.path.join(__location__,filename)) as f:
         for line in f:
             #split line seperated by ','
             line = line.split(',')

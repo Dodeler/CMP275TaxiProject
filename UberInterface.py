@@ -7,7 +7,7 @@ import ConversionFunctions
 import server
 from taxi import UberTaxi
 from collections import defaultdict
-
+import os
 
 
 # from PyQt5.QtGui import QColor, QBrush
@@ -19,6 +19,8 @@ from collections import defaultdict
 # ellipse = self.mapScene.addEllipse(0,0,50,50, greenPen, redBrush)
 
 window = None
+__location__=os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
 g = server.read_city_graph('edmonton-roads-2.0.1.txt')
 #cars = dict()
 
@@ -58,7 +60,7 @@ class GraphicsScene(QGraphicsScene):
 				window.dest = (lat, lon)
 				window.pressed = False
 				#carsdest[window.howmanycars] = (lon, lat)
-				request = (window.start[0], window.start[1], 3, window.dest[0], window.dest[1])
+				request = (window.start[0], window.start[1], 1, window.dest[0], window.dest[1])
 				UberTaxi.handle_request(request,taxi_directory,cust_directory, window.customer_id, g)
 				window.customer_id += 1
 				timer.start()
@@ -89,8 +91,8 @@ class WindowTime(QMainWindow):
 		# 				4: QPixmap('yeg-4.png'), 5: QPixmap('yeg-5.png'), 6: QPixmap('yeg-6.png')}
 		#
 		# self.sizes = {1: 512, 2: 1024, 3: 2048, 4: 4096, 5: 8192, 6: 16384}
-		self.pixmaps = {2: QPixmap('yeg-2.png'), 3: QPixmap('yeg-3.png'),
-						4: QPixmap('yeg-4.png'), 5: QPixmap('yeg-5.png')}
+		self.pixmaps = {2: QPixmap(os.path.join(__location__,'yeg-2.png')), 3: QPixmap(os.path.join(__location__,'yeg-3.png')),
+						4: QPixmap(os.path.join(__location__,'yeg-4.png')), 5: QPixmap(os.path.join(__location__,'yeg-5.png'))}
 
 		self.sizes = {1: 512, 2: 1024, 3: 2048, 4: 4096, 5: 8192}
 		self.pressed = False
@@ -228,7 +230,6 @@ class WindowTime(QMainWindow):
 			self.mapScene.addEllipse(newx-2, newy+10, 6, 6)
 			self.mapScene.addEllipse(newx+11, newy+10, 6, 6)
 			self.drawPath(taxi.path)
-			print('Passenger List: '+ str(taxi.plist))
 
 
 	def drawPath(self, path):
