@@ -126,6 +126,7 @@ class UberTaxi:
 				if time_to_cust < time_to_cust_from_current_cust:
 					time_dict[taxi][0]=time_to_cust
 					time_dict[taxi][2]=path_to_cust
+
 				#drop off first
 				else:
 					time_dict[taxi][0]=time_to_cust_from_current_cust
@@ -170,7 +171,16 @@ class UberTaxi:
 
 		# checks to see if the request has the "drop first" clause
 		if taxi_to_use[1] == "":
-			taxi_directory[tx_id].plist.append(customer_id)
+			if taxi_directory[tx_id].plist:
+				cur_cust_path=least_cost_path(g, cust_directory[customer_id].start_loc,cust_directory[taxi_directory[tx_id].plist[0]].dest,cost_distance)
+				new_cust_path=least_cost_path(g, cust_directory[customer_id].start_loc,cust_directory[customer_id].dest,cost_distance)
+
+				if UberTaxi.taxi_time(cur_cust_path) < UberTaxi.taxi_time(new_cust_path):
+					taxi_directory[tx_id].plist.append(customer_id)
+				else:
+					taxi_directory[tx_id].plist=[customer_id]+taxi_directory[tx_id].plist
+			else:
+				taxi_directory[tx_id].plist.append(customer_id)
 			taxi_directory[tx_id].path=taxi_to_use[2]
 			taxi_directory[tx_id].num_pas+=cust_directory[customer_id].num_riders
 			if taxi_to_use[2]:
