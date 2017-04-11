@@ -117,6 +117,7 @@ class WindowTime(QMainWindow):
 		w.setLayout(grid)
 		#The QLabel widget provides a text or image display.
 		labelZoom = QLabel('Zoom here pls')
+		labelPassengers = QLabel('How many Passengers')
 
 		#The QPushButton widget provides a command button. Takes in arguments
 		#For text label
@@ -127,8 +128,10 @@ class WindowTime(QMainWindow):
 		btnZoomOut.setToolTip('Zoom Out')
 		btnZoomOut.clicked.connect(self.zoomOut)
 
-		dropDownBox = QComboBox()
-
+		spinBox = QSpinBox()
+		spinBox.setMaximum(5)
+		spinBox.setMinimum(1)
+		
 		self.mapScene = GraphicsScene()
 		self.mapScene.setSceneRect(0,0,self.sizes[self.zoomlevel],self.sizes[self.zoomlevel])
 		self.mapScene.addPixmap(self.pixmaps[self.zoomlevel])
@@ -147,6 +150,8 @@ class WindowTime(QMainWindow):
 		grid.addWidget(self.mapView, 0, 0, 4, 4)
 		grid.addWidget(btnZoomIn, 1, 4)
 		grid.addWidget(btnZoomOut, 2, 4)
+		grid.addWidget(labelPassengers, 3, 4)
+		grid.addWidget(spinBox, 4, 4)
 
 		#How everything will look on the screen
 		self.setGeometry(300, 300, 800, 600)
