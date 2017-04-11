@@ -20,25 +20,6 @@ Usability:
 
 The program slows down due to the least cost path function.  To increase the scope of usability, the least cost path function should be made more time efficient (perhaps by means of memoization) at the cost of extra memory.  In addition, to improve the taxi decision algorithm, it depends on being able to call the least cost path algorithm multiple times; to improve the taxi decision algorithm further, it would also depend on the improvement of the least cost path function.
 
-April 9th - Files changed:
-		UberInterface.py
-		taxi.py
-		(Technically) server.py
-
-#TODO:
-	-How many passengers (Delaney)
-	-(Potentially) have taxis return "home"
-			making "home" deciding which "box" it's in and then have in go to the
-			most inner middle corner of that bpx
-	-Alerts (Delaney)
-	-More efficient least_cost_path (?)
-	-Make cars go faster (Delaney?)
-	-Ensure customers can't become eternally stuck in a taxi.
-
-The toolkit called Qt (officially pronounced "cuteâ€) is needed to run program.Run
-	pip3 install pyqt5
-in a terminal. If pip3 couldn't be found, grab it:
-	https://pip.pypa.io/en/stable/installing/
 
 Many comments in UberInterface.py were taken
 from http://pyqt.sourceforge.net/Docs/PyQt5/
