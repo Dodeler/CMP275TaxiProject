@@ -17,6 +17,7 @@ import os
 # greenPen = QPen(green)
 # redBrush = QBrush(red)
 # ellipse = self.mapScene.addEllipse(0,0,50,50, greenPen, redBrush)
+#:)
 
 window = None
 __location__=os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -131,7 +132,7 @@ class WindowTime(QMainWindow):
 		spinBox = QSpinBox()
 		spinBox.setMaximum(5)
 		spinBox.setMinimum(1)
-		
+
 		self.mapScene = GraphicsScene()
 		self.mapScene.setSceneRect(0,0,self.sizes[self.zoomlevel],self.sizes[self.zoomlevel])
 		self.mapScene.addPixmap(self.pixmaps[self.zoomlevel])
